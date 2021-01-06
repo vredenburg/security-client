@@ -4,3 +4,4 @@ export const user = writable(null);
 export const userEdit = writable(null);
 export const activeRoute = writable({});
 export const routes = writable({});
+export const apiMessage = writable(null);

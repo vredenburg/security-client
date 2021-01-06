@@ -1,5 +1,5 @@
 <script>
-	import { activeRoute } from "../stores";
+	import { activeRoute, apiMessage } from "../stores";
 	import { register } from "./Router.svelte";
 
 	export let path = "/";
@@ -11,6 +11,7 @@
 	register({ path, component, middleware });
 
 	$: if ($activeRoute.path === path) {
+		apiMessage.set(null);
 		params = $activeRoute.params;
 	}
 </script>
