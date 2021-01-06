@@ -2,16 +2,16 @@
 	import page from "page";
 	import { UserController } from "../../controllers/UserController";
 	import { NewUser } from "../../models/NewUser";
+	import { apiMessage } from "../../stores";
 
 	const controller: UserController = new UserController();
 	const options: string[] = ["MEMBER", "ADMIN"];
 
 	let newUser: NewUser = new NewUser();
 	let selected: string = "MEMBER";
-	let apiMessage: string = undefined;
 
 	const handleSubmit = async (): Promise<void> => {
-		apiMessage = await controller.createUser(newUser);
+		await controller.createUser(newUser);
 	};
 	const handleCancel = (): void => {
 		page.redirect("/dashboard");
@@ -21,9 +21,9 @@
 <form on:submit|preventDefault={handleSubmit}>
 	<div>
 		<h1>Create new user</h1>
-		{#if apiMessage}
+		{#if $apiMessage}
 			<span>
-				<p>{apiMessage}</p>
+				<p>{$apiMessage}</p>
 			</span>
 		{/if}
 

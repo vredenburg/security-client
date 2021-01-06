@@ -1,25 +1,34 @@
 <script lang="ts">
 	import page from "page";
-	import { user } from "../stores";
 	import { AuthController } from "../controllers/AuthController";
 	import { NewUser } from "../models/NewUser";
+	import { apiMessage } from "../stores";
 
 	let newUser: NewUser = new NewUser();
 	const controller: AuthController = new AuthController();
-	let errors: string = undefined;
 
-	$: if ($user !== null) {
-		page.redirect("/dashboard");
-	}
+	const handleSignUp = async () => {
+		await controller.signUp(newUser);
+
+		console.log("hoi");
+		if ($apiMessage !== null) {
+			console.log($apiMessage);
+		} else {
+			page.redirect("/dashboard");
+		}
+	};
+
+	// $: if ($user !== null) {
+	// 	page.redirect("/dashboard");
+	// }
 </script>
 
-<form
-	on:submit|preventDefault={async () => (errors = await controller.signUp(newUser))}>
+<form on:submit|preventDefault={handleSignUp}>
 	<div>
 		<h1>Sign Up</h1>
-		{#if errors}
+		{#if $apiMessage}
 			<span>
-				<p>{errors}</p>
+				<p>{$apiMessage}</p>
 			</span>
 		{/if}
 

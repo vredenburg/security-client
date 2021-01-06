@@ -1,15 +1,14 @@
 <script lang="ts">
 	import page from "page";
 	import { UserController } from "../../controllers/UserController";
-	import { userEdit } from "../../stores";
+	import { apiMessage, userEdit } from "../../stores";
 
 	const controller: UserController = new UserController();
 	const options: string[] = ["MEMBER", "ADMIN"];
 	let selected: string = $userEdit.role;
-	let apiMessage: string = undefined;
 
 	const handleSubmit = async (): Promise<void> => {
-		apiMessage = await controller.updateUser($userEdit);
+		await controller.updateUser($userEdit);
 	};
 	const handleCancel = (): void => {
 		page.redirect("/dashboard");
@@ -19,9 +18,9 @@
 <form on:submit|preventDefault={handleSubmit}>
 	<div>
 		<h1>Update User</h1>
-		{#if apiMessage}
+		{#if $apiMessage}
 			<span>
-				<p>{apiMessage}</p>
+				<p>{$apiMessage}</p>
 			</span>
 		{/if}
 

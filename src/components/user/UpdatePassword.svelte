@@ -1,18 +1,14 @@
 <script lang="ts">
 	import page from "page";
 	import { UserController } from "../../controllers/UserController";
+	import { apiMessage } from "../../stores";
 
 	const controller: UserController = new UserController();
-	let apiMessage: string = undefined;
 	let passwordOld: string = "";
 	let passwordNew: string = "";
 
 	const handleSubmit = async (): Promise<void> => {
-		apiMessage = await controller.updateUserPassword(
-			userId,
-			passwordOld,
-			passwordNew
-		);
+		await controller.updateUserPassword(userId, passwordOld, passwordNew);
 	};
 	const handleCancel = (): void => {
 		page.redirect("/dashboard");
@@ -21,15 +17,17 @@
 	export let userId: string;
 </script>
 
-<p>{userId}</p>
 <form on:submit|preventDefault={handleSubmit}>
 	<div>
 		<h1>Change password</h1>
-		{#if apiMessage}
+		{#if $apiMessage}
 			<span>
-				<p>{apiMessage}</p>
+				<p>{$apiMessage}</p>
 			</span>
 		{/if}
+
+		<label for="id"><b>User ID</b></label>
+		<p name="id">{userId}</p>
 
 		<label for="psw"><b>Password</b></label>
 		<input
@@ -47,7 +45,7 @@
 			placeholder="Enter New Password"
 			required />
 		<div>
-			<button type="submit">Sign Up</button>
+			<button type="submit">Change password</button>
 			<button type="button" on:click={handleCancel}>Cancel</button>
 		</div>
 	</div>

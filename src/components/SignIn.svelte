@@ -1,45 +1,31 @@
 <script lang="ts">
 	import page from "page";
-	import { user } from "../stores";
 	import { AuthController } from "../controllers/AuthController";
+	import { apiMessage } from "../stores";
 
 	const controller: AuthController = new AuthController();
-	let serverError: string = undefined;
 	let email: string = "";
 	let password: string = "";
 
 	const handleSignIn = async () => {
-		serverError = await controller.signIn(email, password);
+		console.log(email);
+		await controller.signIn(email, password);
 
 		console.log("hoi");
-		if (serverError !== null) {
-			console.log(serverError);
+		if ($apiMessage !== null) {
+			console.log($apiMessage);
 		} else {
 			page.redirect("/dashboard");
 		}
-
-		// controller.signIn(email, password).then((errors) => {
-		// 	console.log("hoi");
-		// 	if (errors !== null) {
-		// 		console.log(errors);
-		// 		serverError = errors;
-		// 	} else {
-		// 		page.redirect("/dashboard");
-		// 	}
-		// });
 	};
-
-	// $: if ($user !== null) {
-	// 	page.redirect("/dashboard");
-	// }
 </script>
 
 <form on:submit|preventDefault={handleSignIn}>
 	<div>
 		<h1>Sign In</h1>
-		{#if serverError}
+		{#if $apiMessage}
 			<div>
-				<p>{serverError}</p>
+				<p>{$apiMessage}</p>
 			</div>
 		{/if}
 		<label for="email"><b>Email</b></label>

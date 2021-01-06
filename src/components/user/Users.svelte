@@ -3,12 +3,11 @@
 	import page from "page";
 	import { UserController } from "../../controllers/UserController";
 	import type { User } from "../../models/User";
-	import { user, userEdit } from "../../stores";
+	import { apiMessage, userEdit } from "../../stores";
 
 	const controller: UserController = new UserController();
 
 	let users: User[] = null;
-	let apiMessage: string = undefined;
 
 	const handleUpdate = (user: User): void => {
 		$userEdit = user;
@@ -16,7 +15,7 @@
 	};
 
 	const handleDelete = async (userId: string): Promise<void> => {
-		apiMessage = await controller.deleteUser(userId);
+		await controller.deleteUser(userId);
 		// users.splice(
 		// 	users.findIndex((user) => user.id === userId),
 		// 	1
@@ -29,12 +28,12 @@
 	});
 </script>
 
+{#if $apiMessage}
+	<span>
+		<p>{$apiMessage}</p>
+	</span>
+{/if}
 {#if users !== null}
-	{#if apiMessage}
-		<span>
-			<p>{apiMessage}</p>
-		</span>
-	{/if}
 	<table>
 		<thead>
 			<tr>
