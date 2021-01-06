@@ -1,43 +1,44 @@
 import { Controller } from "./Controller"
 import type { NewUser } from "../models/NewUser";
 import type { User } from "../models/User";
+import { apiMessage } from "../stores";
 
 export class UserController extends Controller {
 
-	public async getUserById(userId: string): Promise<User> {
-		const res: Response = await fetch("http://localhost:7000/api/users/" + userId, {
+	public async getUserById(userId: string): Promise<User | undefined> {
+		const res: Response = await fetch("https://localhost:7000/api/users/" + userId, {
 			method: "GET",
 			headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + this.getCookie("jwt") }
 		});
+		const data: any = await res.json();
 
 		if (res.status !== 200) {
-			const errors = await res.json();
-			return errors.errors;
+			apiMessage.set(JSON.stringify(data.errors));
+			return;
 		}
-		else {
-			const data: User = await res.json();
-			return data;
-		}
+
+		apiMessage.set(null);
+		return data;
 	}
 
-	public async listUsers(): Promise<User[]> {
-		const res: Response = await fetch("http://localhost:7000/api/users/", {
+	public async listUsers(): Promise<User[] | undefined> {
+		const res: Response = await fetch("https://localhost:7000/api/users/", {
 			method: "GET",
 			headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + this.getCookie("jwt") }
 		});
+		const data: any = await res.json();
 
 		if (res.status !== 200) {
-			const errors = await res.json();
-			return errors.errors;
+			apiMessage.set(JSON.stringify(data.errors));
+			return;
 		}
-		else {
-			const data: User[] = await res.json();
-			return data;
-		}
+
+		apiMessage.set(null);
+		return data;
 	}
 
-	public async createUser(newUser: NewUser): Promise<string> {
-		const res: Response = await fetch("http://localhost:7000/api/users/", {
+	public async createUser(newUser: NewUser): Promise<void> {
+		const res: Response = await fetch("https://localhost:7000/api/users/", {
 			method: "POST",
 			headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + this.getCookie("jwt") },
 			body: JSON.stringify(newUser)
@@ -45,58 +46,60 @@ export class UserController extends Controller {
 
 		if (res.status !== 201) {
 			const data: any = await res.json();
-			return data.errors;
+			apiMessage.set(JSON.stringify(data.errors));
+			return;
 		}
-		else {
-			return "User created succesfully.";
-		}
+
+		apiMessage.set("User created succesfully.");
 	}
 
-	public async updateUser(user: User): Promise<string> {
-		const res: Response = await fetch("http://localhost:7000/api/users/" + user.id, {
+	public async updateUser(user: User): Promise<void> {
+		const res: Response = await fetch("https://localhost:7000/api/users/" + user.id, {
 			method: "PUT",
+			mode: "cors",
 			headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + this.getCookie("jwt") },
 			body: JSON.stringify(user)
 		});
 
 		if (res.status !== 200) {
 			const data: any = await res.json();
-			return data.errors;
+			apiMessage.set(JSON.stringify(data.errors));
+			return;
 		}
-		else {
-			return "User updated succesfully.";
-		}
+
+		apiMessage.set("User updated succesfully.");
 	}
 
-	public async updateUserPassword(userId: string, passwordOld: string, passwordNew: string): Promise<string> {
-		const res: Response = await fetch("http://localhost:7000/api/users/" + userId + "/password_change", {
+	public async updateUserPassword(userId: string, passwordOld: string, passwordNew: string): Promise<null> {
+		const res: Response = await fetch("https://localhost:7000/api/users/" + userId + "/password_change", {
 			method: "POST",
-			headers: { 'Content-Type': 'application/json' },
+			headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + this.getCookie("jwt") },
 			body: JSON.stringify({ id: userId, old: passwordOld, new: passwordNew })
 		});
 
 		if (res.status !== 200) {
 			const data: any = await res.json();
-			return data.errors;
+			console.log(JSON.stringify(data.errors));
+			apiMessage.set(JSON.stringify(data.errors));
+			return;
 		}
-		else {
-			return "Password changed succesfully.";
-		}
+
+		apiMessage.set("Password changed succesfully.");
 	}
 
-	public async deleteUser(userId: string): Promise<string> {
-		const res: Response = await fetch("http://localhost:7000/api/users/" + userId, {
+	public async deleteUser(userId: string): Promise<void> {
+		const res: Response = await fetch("https://localhost:7000/api/users/" + userId, {
 			method: "DELETE",
 			headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + this.getCookie("jwt") }
 		});
 
 		if (res.status !== 200) {
 			const data: any = await res.json();
-			return data.errors;
+			apiMessage.set(JSON.stringify(data.errors));
+			return;
 		}
-		else {
-			return "User deleted succesfully.";
-		}
+
+		apiMessage.set("User deleted succesfully.");
 	}
 
 }
