@@ -79,7 +79,7 @@
 		</div>
 		<div>
 			<button type="submit">Create</button>
-			<button type="button" on:cancel={handleCancel}>Cancel</button>
+			<button type="button" on:click={handleCancel}>Cancel</button>
 		</div>
 	</div>
 </form>
